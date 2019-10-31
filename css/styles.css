@@ -1,0 +1,254 @@
+/*
+* === BODY & MAP ===
+*/
+.wrapper {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+body { margin: 0; padding: 0; height: 100%; width: 100%; background-color: #262626}
+#map {
+  height: 65vh;
+  flex-grow: 2; /* can try flex-grow here, but you probably need to search online*/
+  transition: all 0.4s;
+ }
+
+ /*
+* === GEOCODER & STATUS AREA ===
+*/
+ #geo-status-area {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   padding-left: 1vh;
+   padding-right: 1vh;
+   background-color: #111;
+   font-family: 'Montserrat', sans-serif;
+   border-bottom: solid 2px white;
+   z-index: 10;
+   padding-left: 1vh;
+   padding-right: 1vh;
+}
+#geocoder {
+  display: flex;
+  justify-content: center;
+  margin: 1vh;
+  width: 100%;
+  align-items: center;
+}
+.mapboxgl-ctrl-geocoder {
+  min-width: 100%;
+}
+#menu-btn-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 10px;
+  z-index: 10;
+  padding: 10px;
+}
+.menu-btn {
+  width: 30px;
+  height: 4px;
+  background-color: rgba(0, 0, 0, 0.75);
+  margin: 2px 0;
+  border-radius: 20px;
+}
+.mapboxgl-ctrl-geocoder--icon-search {
+  display: none;
+}
+.mapboxgl-ctrl-geocoder--input {
+  padding-left: 60px;
+}
+#status-area {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: #111;
+  margin-bottom: 1vh;
+  color: white;
+}
+#status-title {
+  flex-wrap: nowrap;
+  font-size: 3.5vw;
+  display: inline;
+  margin-right: 0.5vw;
+}
+#status-text {
+  flex-wrap: nowrap;
+  font-size: 3.5vw;
+  display: inline;
+  white-space: nowrap;
+  margin-left: 0.5vw;
+  font-weight: 900;
+}
+.no-emergency {
+  color: #00ff99;
+}
+
+.emergency {
+  color: red;
+}
+
+/*
+* === INFO AREA ===
+*/
+.faint-hr {
+  display: none;
+}
+#info-area {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  overflow-x: hidden;
+  font-family: 'Roboto', sans-serif;
+}
+#info-area p {
+  padding: 3px 4px 3px 8px;
+  text-decoration: none;
+  color: #818181;
+  display: block;
+}
+#info-area a {
+  color: white;
+  padding: 4px;
+  display: block;
+  text-align: center;
+}
+/*
+* — Day Selector Buttons & Info —
+*/
+#day-selector-container {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  overflow-x: auto;
+  width: 100%;
+  z-index: 5;
+  transition: all 0.4s;
+}
+.day {
+  display: inline-block;
+}
+.day-selector {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  border-color: black;
+  border-width: 2px;
+  border-radius: 20px;
+  padding: 6px 10px;
+  margin: 6px 10px;
+  border-style: solid;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  font-family: 'Montserrat', sans-serif;
+  background: rgb(51, 51, 51);
+  background: rgba(51, 51, 51, 0.7);
+}
+#day1-selector {
+}
+#day2-selector {
+}
+#day3-selector {
+}
+
+/* Add an active class to the active dropdown button */
+.active {
+  background: rgba(247, 247, 247);
+  background: rgba(247, 247, 247, 0.99);
+  color: black;
+  font-weight: bold;
+}
+/* Toggle-container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+.toggle-container {
+  display: none;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  flex-direction: row;
+  text-align: center;
+  color: white;
+  transition: all 0.4s;
+}
+
+#day1 {
+  display: flex;
+}
+
+/* Style the "Do" section */
+.do {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: #133318;
+  border-color: #00ff99;
+  border-width: 3.5px;
+  border-style: solid;
+  padding: 4px 4px;
+}
+.do span {
+  font-size: 3.3vw;
+}
+@media screen and (min-width: 1000px) {
+  .do span {
+     font-size: 18px;
+  }
+}
+/* Style the "Don't" section */
+.dont {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: #801f1f;
+  border-color: #ff0000;
+  border-width: 3.5px;
+  border-style: solid;
+  padding: 4px 4px;
+}
+.dont span {
+  font-size: 3.3vw;
+}
+@media screen and (min-width: 1000px) {
+  .dont span {
+     font-size: 18px;
+  }
+}
+.parking-time {
+  display: flex;
+  flex-basis: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 4px;
+  padding: 2px 0px;
+  font-size: 3.3vw;
+}
+@media screen and (min-width: 1000px) {
+  .parking-time {
+     font-size: 18px;
+  }
+}
+.day2-3-time {
+  margin-left: 2px;
+}
+
+/* For Beta only - emergency declarer */
+#emergency-declarer {
+  display: none;
+  width: 100%;
+  justify-content: center;
+  top: 300px;
+  position: fixed;
+  z-index: 5;
+  left: 0;
+}
+.emergency-btn {
+  margin: 5px;
+}

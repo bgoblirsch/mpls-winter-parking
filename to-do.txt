@@ -1,0 +1,43 @@
+To Do:
++ fix route styling code
++ new option in menu: display road labels only (default on)
++ GPS Accuracy
++ make the "Do" text auto-wrap so each line is 50% of the text
++ add a timeout; attempt to reload map; if no success after two 5-second timeouts, then warn user that connection is bad and let it try again with a longer timeout (you'll have to experiment with times)
++ add disclaimer, privacy policy, terms/user agreement etc.
+  - Any parking signs override information found here. Do not solely rely on this application to determining where to park. You are ultimately responsible for parking properly so always have some situatioonal awareness of the sithuation. This app can only assist you in navigating Minneapolis's Snow Emergency System.   Dealing with the parking rules is no fun, but it allows the snow plows to do their job.
++ avoid dedicated application; see if notifications would be possible through browser or some other means
+	- maybe even just direct them to signup for official mpls notifications
++ restrict map to mpls (both pan and geocode)
++ Add home button - zooms to extent of Minneapolis
++ emergency status module
+  - webhook to watch for snow emergencies
+    + twitter? web crawler? both?
+	- some safety check on the server side to make sure it is always accurate
+	- Expand button to display more info (or put in menu?)
+		- will not be declared after X:00 PM
+		* general info like blue signs, the official rules/pictures from mpls, etc.
+
+Immediately after MVP:
++ google analytics
++ ads
++ donation/remove ads
++ incorporate cookies so that you don't have to request location every time
+
+Non-MVP items:
++ change closeNav() functionality form stopVideo() -> pauseVideo()
++ add ability to switch basemap (non-mvp)
++ host your own tiles with postgis? (non-mvp)
++ menu button
+	- settings w/ customization options (non-mvp)
+	- feedback/bug report (non-mvp)
++ report that the road section has been plowed (non-mvp)
+  - work with mpls to automatically show plowed roads?
++ auto location test (non-mvp)
+	- check user location, have them confirm they are between the two blocks, and give them a thumbs up or thumbs download
+	- extra disclaimer saying (we can't be 100% certain you are properly parked and cannot account for driveways, fire hydrants, etc.)
+	- allow hide disclaimer in the future
++ "What if" button: what if an emergency was declared today" (non-mvp)
++ optimize geojson if possible (remove erroneous pts, etc. [non-mvp])
++ allow people to save bookmarked locations (non-mvp)
++ Use tow count data at http://opendata.minneapolismn.gov/search?tags=Snow%20Emergency to check if user is in a high ticket/tow area
