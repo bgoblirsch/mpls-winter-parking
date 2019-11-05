@@ -2,10 +2,12 @@
   display: flex;
   position: fixed;
   z-index: 100;
-  width: 80%;
+  width: 90%;
   height: 80%;
-  margin: 0 auto;
-  margin: 10%;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 15%;
+  margin-bottom: 5%;
   background-color: black;
   border-style: solid;
   border-color: white;
@@ -35,7 +37,7 @@
   align-items: center;
   width: 30%;
   color: white;
-  font-size: 20px;
+  font-size: 16px;
   padding: 10px;
   border-color: white;
   border-style: solid;
@@ -71,8 +73,4 @@
   text-decoration: none;
   display: inline-block;
   font-size: 20px;
-}
-
-.flex-container h1 {
-  margin-bottom: 0;
 }
