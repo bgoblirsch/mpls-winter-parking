@@ -1,27 +1,64 @@
 <html>
 <head>
 	<meta charset='utf-8' />
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151323589-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-151323589-1');
+	</script>
+
 	<title>Minneapolis Snow Emergency Parking Guide</title>
 	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.3.0/mapbox-gl.js'></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="jquery-textfill-master/dist/jquery.textfill.min.js"></script>
-	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.3.0/mapbox-gl.css' rel='stylesheet' />
+	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.3.0/mapbox-gl.css' rel='stylesheet'/>
 	<link href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.1/mapbox-gl-geocoder.css' rel='stylesheet' type='text/css' />
 	<link href="css/styles.css" rel="stylesheet" type='text/css'>
 	<!-- Loading Animations -->
 	<link href="css/loading.css" rel="stylesheet" type='text/css'>
   <!-- Sidenav Styling -->
 	<link href="css/sidenav.css" rel="stylesheet" type='text/css'>
+	<!-- Welcome Window Styling  -->
+	<link href="css/user-agreement.css" rel="stylesheet" type='text/css'>
   <!-- Font Import -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap" rel="stylesheet">
 </head>
 
 <body>
 <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.1/mapbox-gl-geocoder.min.js'></script>
+<div id="grey-backdrop">
+		<!--
+		<div id="mode-selector">
+			<label class="radio-btn">
+				<input class="mode-radio" name="mode" type="radio" label="Default" >
+				<img class="mode-img" src="imgs/light-mode.png">
+				<p>Light Mode</p>
+			</label>
+			<label class="radio-btn">
+				<input class="mode-radio" name="mode" type="radio" label="Dark Mode" checked>
+				<img class="mode-img" src="imgs/dark-mode.png">
+				<p>Dark Mode</p>
+			</label>
+		</div>
+	  -->
+	<div id="user-agreement">
+		<div id="agreement-wrapper">
+			<p class="agreement-text">By continuing, you acknowledge that this application can only assist you in parking during snow emergencies and that you are ultimately responsible for parking properly.</p>
+			<p class="agreement-text"><strong>Always observe and obey local signs.</strong></p>
+		</div>
+		<button id="accept-btn" label="I Acknowledge" onclick="closeAgreement()">I agree</button>
+	</div>
+</div>
 
+<!-- SIDENAV -->
 <div id="SideNav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+	<!--
 	<div id='beta-container'>
 		<span style='display:flex'>Beta Mode</span>
 		<label id='beta-switch' class="switch">
@@ -29,6 +66,7 @@
   		<span class="slider round"></span>
 		</label>
 	</div>
+	-->
 	<div id='darkmode-container'>
 		<span style='display:flex'>Dark Mode</span>
 		<label id='darkmode-switch' class="switch">
@@ -38,10 +76,18 @@
 	</div>
   <a href="http://www.ci.minneapolis.mn.us/snow/snow_parking-info" target='blank'>Official Minneapolis Rules</a>
 	<a href="https://bgoblirsch.github.io" target='blank'>About</a>
-	<a href="mailto:brandon.goblirsch@gmail.com" target='blank'>Feedback</a>
+	<a href="https://forms.gle/V4PDV2NjP8LwEeU47" target='blank'>Feedback</a>
 	<iframe id="rules-video" src="https://www.youtube.com/embed/GeVPqEk2kf8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+    <!--
+	<div id="twitter-feed">
+		<a class="twitter-timeline" data-width="320" data-height="400" data-theme="light" href="https://twitter.com/MinneapolisSnow?ref_src=twsrc%5Etfw">Tweets by MinneapolisSnow</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+	</div>
+	-->
+
 </div>
 
+<!-- DAY SELECTORS -->
 <div id='day-selector-container'>
 	<button class='day-selector' id='day1-selector' value=1>
 		Day 1 Info
@@ -71,6 +117,7 @@
 </div>
 <!-- end of beta code> -->
 
+<!-- BODY -->
 <div class='wrapper'>
 	<div id='geo-status-area'>
 		<div id='geocoder'>
@@ -80,9 +127,8 @@
 				<div class='menu-btn'></div>
 			</div>
 		</div>
-		<div id='status-area'> <!-- auto resize text in this div to fit on one line in parent div -->
+		<div id='status-area'>
 			<!-- info button here saying, "A snow emergency will never be declared after X:00 PM"-->
-			<!-- i think these two p elements should be wrapped in divs, width = 50%, and font-auto scale in size to fit -->
 			<span id='status-title'>Snow Emergency Status: </span>
 			<span id='status-text'>Loading . . .</span><!-- hook into minneapolis snow emergency API/SMS system -->
 		</div>
@@ -103,12 +149,11 @@
 				Day 1 Rules start at 9 PM and end at 8 AM the next morning.
 			</div>
 		</div>
-		<hr class='faint-hr'>
 
 		<!-- Day 2 Container> -->
 		<div class='toggle-container' id='day2'>
 			<div class='do'>
-				<span>Park on either side of Snow Emergency Routes or the ODD side of non-Snow Emergency Routes.</span>
+				<span>Park on either side of Snow Emergency Routes or <br> the ODD side of non-Snow Emergency Routes.</span>
 			</div>
 			<div class='dont'>
 				<span>Do NOT park on the EVEN side of non-Snow Emergency Routes.</span>
@@ -117,12 +162,11 @@
 				<span>Rules are in effect from: <strong>8 AM - 8 PM</strong></span>
 			</div>
 		</div>
-		<hr class='faint-hr'>
 
 		<!-- Day 3 Container -->
 		<div class='toggle-container' id='day3'>
 			<div class='do'>
-				<span>Park on either side of Snow Emergency Routes or the EVEN side of non-Snow Emergency Routes</span>
+				<span>Park on either side of Snow Emergency Routes or <br> the EVEN side of non-Snow Emergency Routes</span>
 			</div>
 			<div class='dont'>
 				<span>Do NOT park on the ODD side of non-Snow Emergency Routes.</span>
@@ -131,14 +175,7 @@
 				<span>Rules are in effect from: <strong>8 AM - 8 PM</strong></span>
 			</div>
 		</div>
-		<hr class='faint-hr'>
 	</div>
-		<!-- Official Link ~~~~ move to menu/settings/more
-		<div id='official-link'>
-			<hr class='faint-hr'>
-			<a href='http://www.ci.minneapolis.mn.us/snow/snow_parking-info' target='blank'>Official Minneapolis Snow Emergency Rules 🔗</a>
-		</div>
-		-->
 </div>
 <script src='map.js'></script>
 <script>

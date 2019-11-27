@@ -29,7 +29,7 @@ sleep(200).then(() => {
   mapTop = document.getElementById('geo-status-area').offsetHeight;
   document.getElementById('day-selector-container').style.top = mapTop;
   // For beta only
-  document.getElementById('emergency-declarer').style.top = mapTop + 60;
+  //document.getElementById('emergency-declarer').style.top = mapTop + 60;
 });
 
 // Check if Dark Mode is enabled
@@ -41,8 +41,6 @@ function checkDisplayMode() {
     return 'light';
   }
 };
-
-
 
 // if (landscape) { "Day 1 Info v"} else {"Day 1"}
 /*
@@ -79,13 +77,6 @@ function deactivate() {
   }
 }
 
-function activate(day) {
-
-  setMapLayer(day,checkDisplayMode());
-  // activate the correct day button (this should be a function)
-  // display the correct info container (so should this)
-}
-
 function getStatus() {
   // check if an emergency has been Declared
   // returns:
@@ -94,7 +85,7 @@ function getStatus() {
   // 2 for day 2
   // 3 for day 3
   // if it fails, return -1
-  return 0;
+  return 1;
 }
 
 function setStatus(day) {
@@ -173,6 +164,11 @@ var stopVideos = function () {
 	});
 };
 
+function closeAgreement() {
+  var agreement = document.getElementById("grey-backdrop");
+  agreement.style.display = "none";
+}
+
 // ############# //
 // ############# //
 // Map Functions //
@@ -180,12 +176,25 @@ var stopVideos = function () {
 // ############# //
 
 function hideMapLayer() {
-  map.setLayoutProperty('route-data', 'visibility', 'none');
+  map.setLayoutProperty("route-data", "visibility", "none");
+}
+
+function getPaint(day) {
+  var result = [
+    "match",
+    ["get", day],
+    0, '#801f1f',
+    1, '#278235',
+    "#ccc",
+  ]
+  return result;
+
 }
 
 // set map layer style
 function setMapLayer(day, mode) {
   var lineColor;
+  /*
   if (mode == 'dark') {
     if (day == 1) {
       fillColor = [
@@ -252,7 +261,8 @@ function setMapLayer(day, mode) {
     console.log('invalid value set for variable mode:');
     console.log(mode);
   }
-
+  */
+  fillColor = getPaint(day);
 
   map.setPaintProperty('route-data', 'fill-color', fillColor);
   //map.setPaintProperty('route-data', 'fill-outline-color', outlineColor);
@@ -281,7 +291,7 @@ var map = new mapboxgl.Map({
   style: 'mapbox://styles/mapbox/dark-v10', // stylesheet location
   center: [-93.27, 44.98], // starting position [lng, lat]
   zoom: 11, // starting zoom
-  minZoom: 11
+  //minZoom: 11,
 });
 
 // geocoder object
@@ -342,7 +352,7 @@ map.addControl(geolocate, 'bottom-right');
 
 map.fitBounds(city_boundary);
 
-var routeDataDark = {
+var routeData = {
   "id": "route-data",
   "type": "fill",
   "source": {
@@ -351,37 +361,6 @@ var routeDataDark = {
   },
   "source-layer": "Snow_Emergency_Routes-74gvfg",
   //"minzoom": 12,
-  'paint': {
-    "fill-antialias": true,
-    'fill-color': [
-      'match',
-      ['get', 'DAY1'],
-      0, '#d92525',
-      1, '#75f569',
-      '#ccc'
-    ],
-  }
-};
-
-var routeDataLight = {
-  "id": "route-data",
-  "type": "fill",
-  "source": {
-    type: 'vector',
-    url: 'mapbox://bgoblirsch.3o2enpx8'
-  },
-  "source-layer": "Snow_Emergency_Routes-74gvfg",
-  //"minzoom": 12,
-  'paint': {
-    "fill-antialias": true,
-    'fill-color': [
-      'match',
-      ['get', 'DAY1'],
-      0, '#801f1f',
-      1, '#133318',
-      '#ccc'
-    ],
-  }
 };
 
 map.on('load', function () {
@@ -399,7 +378,15 @@ map.on('load', function () {
 
   // Add road data
   // map.addSource(snow_route_data);
-  map.addLayer(routeDataDark, mapLabels);
+  map.addLayer(routeData, mapLabels);
+  var status = getStatus();
+  if (status = 0) {
+    status = 'DAY1'
+  }
+  else {
+    status = 'DAY' + status
+  }
+  map.setPaintProperty("route-data", "fill-color", getPaint(status))
 
   // Get snow emergency status and set UI accordingly
   var statusResult = getStatus();
@@ -407,6 +394,23 @@ map.on('load', function () {
 
   // Prompt user for geoloacation
   geolocate.trigger();
+  sleep(3000).then(() => {
+    var outlat = false;
+    if ((geolocate._lastKnownPosition.coords.latitude < 44.89015) || (geolocate._lastKnownPosition.coords.latitude > 45.05125)) {
+      outlat = true;
+    }
+    var outlon = false;
+    if ((geolocate._lastKnownPosition.coords.longitude < -93.32916) || (geolocate._lastKnownPosition.coords.longitude > -93.19386)) {
+      outlon = true;
+    }
+    if (outlat || outlon) {
+      map.fitBounds(city_boundary);
+    }
+    else {
+      geolocate.trackUserLocation = true;
+    }
+  });
+
   // if (y > x) {prompt for location} else {point at search}
 });
 
@@ -453,22 +457,14 @@ for (var i = 0; i < dayButtons.length; i++) {
       document.getElementById('info-area').style.display = 'flex';
       map.resize();
 
-
-      var mode
-      // Check if Dark Mode is enabled
-      if (document.getElementById('dark-mode').checked) {
-        mode = 'dark';
-      }
-      else {
-        mode = 'light';
-      }
-
       // Style the map layer
-      setMapLayer(this.value, checkDisplayMode());
+      var day = "DAY" + this.value;
+      setMapLayer(day, checkDisplayMode());
     }
   });
 }
 
+/*
 // Beta buttons
 var betaButtons = document.getElementsByClassName('emergency-btn');
 var betaArea = document.getElementById('emergency-declarer');
@@ -488,13 +484,13 @@ betaSwitch.addEventListener('change', function() {
     betaArea.style.display = 'none';
   }
 });
-
+*/
 
 var darkModeSwitch = document.getElementById('dark-mode');
 darkModeSwitch.addEventListener('change', function() {
   if (this.checked) {
     map.setStyle('mapbox://styles/mapbox/dark-v10');
-    sleep(300).then(() => {
+    sleep(1000).then(() => {
       if (typeof map.getLayer('route-data') == 'undefined') {
         var layers = map.getStyle().layers;
         // Find the index of the first symbol layer in the map style
@@ -505,7 +501,17 @@ darkModeSwitch.addEventListener('change', function() {
             break;
           }
         }
-        map.addLayer(routeDataDark,mapLabels);
+        map.addLayer(routeData,mapLabels);
+        var status = getStatus();
+        if (status = 0) {
+          status = 'DAY1'
+        }
+        else {
+          status = 'DAY' + status
+        }
+        map.setPaintProperty("route-data", "fill-color", getPaint(status));
+        document.getElementById('day1-selector').click();
+        document.getElementById('day1-selector').click();
       }
     });
   }
@@ -522,10 +528,37 @@ darkModeSwitch.addEventListener('change', function() {
             break;
           }
         }
-        map.addLayer(routeDataLight,'road-label-small');
+        map.addLayer(routeData,'road-label-small');
+        var status = getStatus();
+        if (status = 0) {
+          status = 'DAY1'
+        }
+        else {
+          status = 'DAY' + status
+        }
+        map.setPaintProperty("route-data", "fill-color", getPaint(status))
         document.getElementById('day1-selector').click();
         document.getElementById('day1-selector').click();
       }
     });
   }
 });
+
+
+/* No longer used
+var welcomeSelectors = document.getElementsByClassName('radio-btn');
+for (var i = 0; i < welcomeSelectors.length; i++) {
+  welcomeSelectors[i].addEventListener("change", function() {
+    if (this.children[0].checked) {
+      darkModeSwitch.click();
+      //this.style.borderColor = "#257AFD";
+    }
+    else if (!this.children[0].checked) {
+      //this.style.borderColor = "white";
+    }
+    else {
+      console.log("unexpected error in welcome selector listener");
+    }
+  });
+}
+*/

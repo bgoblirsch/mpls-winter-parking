@@ -1,0 +1,62 @@
+#grey-backdrop {
+  display: flex;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  z-index: 75;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(40, 40, 40, 0.75);
+}
+
+#user-agreement {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  max-width: 1000px;
+  border-width: 2px;
+  border-color: white;
+  border-style: solid;
+  border-radius: 20px;
+  color: #e3e3e3;
+  padding: 10px;
+  text-align: center;
+  font-size: 4vw;
+  background-color: black;
+}
+
+@media screen and (min-width: 1000px) {
+  #user-agreement {
+     font-size: 20 px;
+  }
+}
+
+#agreement-wrapper {
+  margin: 0px 10px;
+}
+
+.agreement-text {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#accept-btn {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 6px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 5vw;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+@media screen and (min-width: 1000px) {
+  #accept-btn {
+     font-size: 26px;
+  }
+}
