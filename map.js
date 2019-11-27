@@ -29,7 +29,7 @@ sleep(200).then(() => {
   mapTop = document.getElementById('geo-status-area').offsetHeight;
   document.getElementById('day-selector-container').style.top = mapTop;
   // For beta only
-  document.getElementById('emergency-declarer').style.top = mapTop + 60;
+  //document.getElementById('emergency-declarer').style.top = mapTop + 60;
 });
 
 // Check if Dark Mode is enabled
@@ -85,7 +85,7 @@ function getStatus() {
   // 2 for day 2
   // 3 for day 3
   // if it fails, return -1
-  return 0;
+  return 1;
 }
 
 function setStatus(day) {
@@ -164,9 +164,9 @@ var stopVideos = function () {
 	});
 };
 
-function closeWelcome() {
-  var welcome = document.getElementById("welcome-container");
-  welcome.style.display = "none";
+function closeAgreement() {
+  var agreement = document.getElementById("grey-backdrop");
+  agreement.style.display = "none";
 }
 
 // ############# //
@@ -291,7 +291,7 @@ var map = new mapboxgl.Map({
   style: 'mapbox://styles/mapbox/dark-v10', // stylesheet location
   center: [-93.27, 44.98], // starting position [lng, lat]
   zoom: 11, // starting zoom
-  minZoom: 11
+  //minZoom: 11,
 });
 
 // geocoder object
@@ -394,6 +394,23 @@ map.on('load', function () {
 
   // Prompt user for geoloacation
   geolocate.trigger();
+  sleep(3000).then(() => {
+    var outlat = false;
+    if ((geolocate._lastKnownPosition.coords.latitude < 44.89015) || (geolocate._lastKnownPosition.coords.latitude > 45.05125)) {
+      outlat = true;
+    }
+    var outlon = false;
+    if ((geolocate._lastKnownPosition.coords.longitude < -93.32916) || (geolocate._lastKnownPosition.coords.longitude > -93.19386)) {
+      outlon = true;
+    }
+    if (outlat || outlon) {
+      map.fitBounds(city_boundary);
+    }
+    else {
+      geolocate.trackUserLocation = true;
+    }
+  });
+
   // if (y > x) {prompt for location} else {point at search}
 });
 
@@ -447,6 +464,7 @@ for (var i = 0; i < dayButtons.length; i++) {
   });
 }
 
+/*
 // Beta buttons
 var betaButtons = document.getElementsByClassName('emergency-btn');
 var betaArea = document.getElementById('emergency-declarer');
@@ -466,7 +484,7 @@ betaSwitch.addEventListener('change', function() {
     betaArea.style.display = 'none';
   }
 });
-
+*/
 
 var darkModeSwitch = document.getElementById('dark-mode');
 darkModeSwitch.addEventListener('change', function() {
@@ -527,6 +545,7 @@ darkModeSwitch.addEventListener('change', function() {
 });
 
 
+/* No longer used
 var welcomeSelectors = document.getElementsByClassName('radio-btn');
 for (var i = 0; i < welcomeSelectors.length; i++) {
   welcomeSelectors[i].addEventListener("change", function() {
@@ -542,3 +561,4 @@ for (var i = 0; i < welcomeSelectors.length; i++) {
     }
   });
 }
+*/

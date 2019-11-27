@@ -1,15 +1,27 @@
 To Do:
-+ fix route styling code
++
++ "more info" button with info about odd/even sides; make it a "slide-up" thingy like in google maps
++ Welcome screen
+  - Add a note to accept geolocation request and how the site does not collect your location data (or you could collect it, and possibly monetize it somehow; maybe leverage for ads)
+  - Move geolocation request to trigger after clicking "I Agree"
+  - suggest portrait mode
++ fix label coloring in light mode
+  - switch to just default to light Mode?
++ Side Nav
+  - Press "esc" to close
+  - Click outside of side nav to close
+  - add a grey backdrop when it's open
 + new option in menu: display road labels only (default on)
-+ GPS Accuracy
-+ make the "Do" text auto-wrap so each line is 50% of the text
++ GPS Accuracy Indicator
++ Twitter
+  - fix weird "appception" bug
 + add a timeout; attempt to reload map; if no success after two 5-second timeouts, then warn user that connection is bad and let it try again with a longer timeout (you'll have to experiment with times)
 + add disclaimer, privacy policy, terms/user agreement etc.
   - Any parking signs override information found here. Do not solely rely on this application to determining where to park. You are ultimately responsible for parking properly so always have some situatioonal awareness of the sithuation. This app can only assist you in navigating Minneapolis's Snow Emergency System.   Dealing with the parking rules is no fun, but it allows the snow plows to do their job.
 + avoid dedicated application; see if notifications would be possible through browser or some other means
 	- maybe even just direct them to signup for official mpls notifications
 + restrict map to mpls (both pan and geocode)
-+ Add home button - zooms to extent of Minneapolis
++ Add home button? - zooms to extent of Minneapolis
 + emergency status module
   - webhook to watch for snow emergencies
     + twitter? web crawler? both?
@@ -19,12 +31,12 @@ To Do:
 		* general info like blue signs, the official rules/pictures from mpls, etc.
 
 Immediately after MVP:
-+ google analytics
 + ads
 + donation/remove ads
 + incorporate cookies so that you don't have to request location every time
 
 Non-MVP items:
++ multi-language support
 + change closeNav() functionality form stopVideo() -> pauseVideo()
 + add ability to switch basemap (non-mvp)
 + host your own tiles with postgis? (non-mvp)
@@ -41,3 +53,24 @@ Non-MVP items:
 + optimize geojson if possible (remove erroneous pts, etc. [non-mvp])
 + allow people to save bookmarked locations (non-mvp)
 + Use tow count data at http://opendata.minneapolismn.gov/search?tags=Snow%20Emergency to check if user is in a high ticket/tow area
+
+
+
+
+For handling when users are not in city bounds:
+sleep(500).then(() => {
+  var outlat = false;
+  if ((geolocate._lastKnownPosition.coords.latitude < 44.89015) || (geolocate._lastKnownPosition.coords.latitude > 45.05125)) {
+    outlat = true;
+  }
+  var outlon = false;
+  if ((geolocate._lastKnownPosition.coords.longitude < -93.32916) || (geolocate._lastKnownPosition.coords.longitude > -93.19386)) {
+    outlon = true;
+  }
+  if (outlat || outlon) {
+    map.fitBounds(city_boundary);
+  }
+  else {
+      geolocate.trackUserLocation = true;
+  }
+});
