@@ -10,7 +10,7 @@
 // Init Variables
 
 // Get HTML head element to use for loading css files
-var head = document.getElementsByTagName('HEAD')[0];
+
 var dayButtons = document.getElementsByClassName('day-selector');
 var mapTop;
 
@@ -28,8 +28,6 @@ const sleep = (milliseconds) => {
 sleep(200).then(() => {
   mapTop = document.getElementById('geo-status-area').offsetHeight;
   document.getElementById('day-selector-container').style.top = mapTop;
-  // For beta only
-  //document.getElementById('emergency-declarer').style.top = mapTop + 60;
 });
 
 // Check if Dark Mode is enabled
@@ -41,25 +39,6 @@ function checkDisplayMode() {
     return 'light';
   }
 };
-
-// if (landscape) { "Day 1 Info v"} else {"Day 1"}
-/*
-function changeDayButtonContent() {
-  var dayButtons = document.getElementsByClassName('day-selector');
-  if (isPortrait()) {
-    for (i = 0; i < dayButtons.length; i++) {
-      var dayNumber = dayButtons[i].value
-      dayButtons[i].innerHTML = `Day ${dayNumber}`;
-      //dayButtons[i].firstChild.innerHTML = `Day ${dayNumber}`;
-    }
-  } else {
-    for (i = 0; i < dayButtons.length; i++) {
-      var dayNumber = dayButtons[i].value;
-      dayButtons[i].innerHTML = `Day ${dayNumber} Info <i class="fa fa-caret-down"></i>`;
-    }
-  }
-}
-*/
 
 function isPortrait() {
   if (window.screen.availHeight > window.screen.availWidth) {
@@ -78,14 +57,32 @@ function deactivate() {
 }
 
 function getStatus() {
+  // Temporary getStatus logic until API is built
+  var emergStartUTC = new Date(Date.UTC('2019','11','14','3', '0', '0'));
+  var startTimestamp = emergStartUTC.getTime();
+  var date = new Date();
+  var time = date.getTime();
+  var diff = time - startTimestamp;
+  var hours = 1000 * 60 * 60;
+  var dh = diff / hours
+
+  var dayOut = 1;
+  if (dh >= 11 && dh < 35) {
+      dayOut = 2;
+  } else if (dh >= 35 && dh < 47) {
+      dayOut = 3;
+  } else if (dh >= 47) {
+      dayOut = 0;
+  }
+
   // check if an emergency has been Declared
-  // returns:
+  // return:
   // 0 for no Emergency
   // 1 for declared - day1
   // 2 for day 2
   // 3 for day 3
   // if it fails, return -1
-  return 1;
+  return 2;
 }
 
 function setStatus(day) {
@@ -99,11 +96,6 @@ function setStatus(day) {
     if (!dayButton.classList.value.includes('active')) {
       dayButton.click();
     }
-    /*
-    if (!document.getElementById('day1-selector').classList.value.includes('active')) {
-      document.getElementById('day1-selector').click();
-    }
-    */
   } else if (day == 1) {
     // set status to 'Emergency Declared - Day 1'
     statusText.innerHTML = 'Emergency Declared - Day 1';
@@ -150,6 +142,7 @@ function closeNav() {
   stopVideos();
   document.getElementById("SideNav").style.width = "0";
 }
+
 // Code to stop youtube video on nav close
 // Later change so that it only pauses the video
 var stopVideos = function () {
@@ -193,79 +186,8 @@ function getPaint(day) {
 
 // set map layer style
 function setMapLayer(day, mode) {
-  var lineColor;
-  /*
-  if (mode == 'dark') {
-    if (day == 1) {
-      fillColor = [
-          'match',
-          ['get', 'DAY1'],
-          0, '#801f1f',
-          1, '#278235',
-          '#ccc',
-        ];
-    } else if (day == 2) {
-      fillColor = [
-          'match',
-          ['get', 'DAY2'],
-          0, '#801f1f',
-          1, '#278235',
-          '#ccc',
-        ];
-    } else if (day == 3) {
-      fillColor = [
-          'match',
-          ['get', 'DAY3'],
-          0, '#801f1f',
-          1, '#278235',
-          '#ccc',
-        ];
-    }
-    else {
-      console.log('invalid parameter for setMapLayer()');
-      console.log(day);
-    }
-  }
-  else if (mode == 'light') {
-    if (day == 1) {
-      fillColor = [
-          'match',
-          ['get', 'DAY1'],
-          0, '#d92525',
-          1, '#75f569',
-          '#ccc',
-        ];
-    } else if (day == 2) {
-      fillColor = [
-          'match',
-          ['get', 'DAY2'],
-          0, '#d92525',
-          1, '#75f569',
-          '#ccc',
-        ];
-    } else if (day == 3) {
-      fillColor = [
-          'match',
-          ['get', 'DAY3'],
-          0, '#d92525',
-          1, '#75f569',
-          '#ccc',
-        ];
-    }
-    else {
-      console.log('invalid parameter for setMapLayer()');
-      console.log(day);
-    }
-  }
-  else {
-    console.log('invalid value set for variable mode:');
-    console.log(mode);
-  }
-  */
   fillColor = getPaint(day);
-
   map.setPaintProperty('route-data', 'fill-color', fillColor);
-  //map.setPaintProperty('route-data', 'fill-outline-color', outlineColor);
   if (map.getLayoutProperty('route-data', 'visibility') == 'none') {
     map.setLayoutProperty('route-data', 'visibility', 'visible');
   }
@@ -315,20 +237,6 @@ else {
 var nav = new mapboxgl.NavigationControl({showZoom: displayZoom});
 map.addControl(nav, 'bottom-right');
 
-// Add/remove zoom on orientation change
-// Also resize the map
-/*
-window.addEventListener("orientationchange", function() {
-  map.removeControl(nav);
-  displayZoom = !displayZoom;
-  nav = new mapboxgl.NavigationControl({showZoom: displayZoom});
-  map.addControl(nav, 'bottom-right');
-  changeDayButtonContent();
-  }
-);
-*/
-
-
 window.onresize = function() {
   sleep(300).then(() => {
     map.resize();
@@ -352,6 +260,8 @@ map.addControl(geolocate, 'bottom-right');
 
 map.fitBounds(city_boundary);
 
+// Route Data from City of Minneapolis:
+// http://opendata.minneapolismn.gov/datasets/snow-emergency-routes
 var routeData = {
   "id": "route-data",
   "type": "fill",
@@ -360,14 +270,15 @@ var routeData = {
     url: 'mapbox://bgoblirsch.3o2enpx8'
   },
   "source-layer": "Snow_Emergency_Routes-74gvfg",
-  //"minzoom": 12,
 };
 
 map.on('load', function () {
+  // Unshow the "Loading..." text
   document.getElementById('loading-map').style.display = 'none';
-  //document.getElementById('loading-text').style.display = 'none';
-  var layers = map.getStyle().layers;
+
   // Find the index of the first symbol layer in the map style
+  // Do this in order to display labels over the route data
+  var layers = map.getStyle().layers;
   var mapLabels;
   for (var i = 0; i < layers.length; i++) {
     if (layers[i].type === 'symbol') {
@@ -377,20 +288,21 @@ map.on('load', function () {
   }
 
   // Add road data
-  // map.addSource(snow_route_data);
   map.addLayer(routeData, mapLabels);
+
+  // Get Snow Emergency Status
   var status = getStatus();
-  if (status = 0) {
-    status = 'DAY1'
+  if (status == 0) {
+    var statusString = 'DAY1'
   }
   else {
-    status = 'DAY' + status
+    statusString = 'DAY' + status
   }
-  map.setPaintProperty("route-data", "fill-color", getPaint(status))
+  // Color Route Data According to Emergency Status
+  map.setPaintProperty("route-data", "fill-color", getPaint(statusString))
 
-  // Get snow emergency status and set UI accordingly
-  var statusResult = getStatus();
-  setStatus(statusResult);
+  // Set UI according to getStatus()
+  setStatus(status);
 
   // Prompt user for geoloacation
   geolocate.trigger();
@@ -410,8 +322,6 @@ map.on('load', function () {
       geolocate.trackUserLocation = true;
     }
   });
-
-  // if (y > x) {prompt for location} else {point at search}
 });
 
 // ############ //
@@ -420,11 +330,7 @@ map.on('load', function () {
 // ############ //
 // ############ /
 
-//* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content
-// This allows the user to have multiple dropdowns without any conflict */
-
-
-// Add click event listener on the three dropdown button
+// Add click event listener on the three Day Selection buttons
 for (var i = 0; i < dayButtons.length; i++) {
   dayButtons[i].addEventListener('click', function() {
     // Grabs the value of the clicked button and appends it to 'day'
@@ -441,10 +347,10 @@ for (var i = 0; i < dayButtons.length; i++) {
     else {
       // deactivate all buttons & hide info container
       for (j = 0; j < dayButtons.length; j++) {
+        var iterDay = 'day' + dayButtons[j].value;
+        document.getElementById(iterDay).style.display = 'none';
         if (dayButtons[j].classList.value.includes('active')) {
           dayButtons[j].classList.toggle('active');
-          var selectedDay = 'day' + dayButtons[j].value;
-          document.getElementById(selectedDay).style.display = 'none';
         }
       }
 
@@ -464,28 +370,7 @@ for (var i = 0; i < dayButtons.length; i++) {
   });
 }
 
-/*
-// Beta buttons
-var betaButtons = document.getElementsByClassName('emergency-btn');
-var betaArea = document.getElementById('emergency-declarer');
-
-for (var i = 0; i < betaButtons.length; i++) {
-  betaButtons[i].addEventListener('click', function() {
-    setStatus(this.value);
-  });
-}
-
-var betaSwitch = document.getElementById('beta-mode');
-betaSwitch.addEventListener('change', function() {
-  if (this.checked) {
-    betaArea.style.display = 'flex';
-  }
-  else {
-    betaArea.style.display = 'none';
-  }
-});
-*/
-
+// Light/Dark Mode Toggler Logic
 var darkModeSwitch = document.getElementById('dark-mode');
 darkModeSwitch.addEventListener('change', function() {
   if (this.checked) {
@@ -543,22 +428,3 @@ darkModeSwitch.addEventListener('change', function() {
     });
   }
 });
-
-
-/* No longer used
-var welcomeSelectors = document.getElementsByClassName('radio-btn');
-for (var i = 0; i < welcomeSelectors.length; i++) {
-  welcomeSelectors[i].addEventListener("change", function() {
-    if (this.children[0].checked) {
-      darkModeSwitch.click();
-      //this.style.borderColor = "#257AFD";
-    }
-    else if (!this.children[0].checked) {
-      //this.style.borderColor = "white";
-    }
-    else {
-      console.log("unexpected error in welcome selector listener");
-    }
-  });
-}
-*/

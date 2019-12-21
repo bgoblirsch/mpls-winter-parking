@@ -31,12 +31,14 @@ To Do:
 		* general info like blue signs, the official rules/pictures from mpls, etc.
 
 Immediately after MVP:
++ change the API request into a webhook so that it will update without having to refresh the page
 + ads
 + donation/remove ads
 + incorporate cookies so that you don't have to request location every time
 
 Non-MVP items:
 + multi-language support
++ handle colorblind
 + change closeNav() functionality form stopVideo() -> pauseVideo()
 + add ability to switch basemap (non-mvp)
 + host your own tiles with postgis? (non-mvp)
