@@ -18,8 +18,7 @@ body {
   background-color: #262626
 }
 #map {
-  height: 65vh;
-  flex-grow: 2; /* can try flex-grow here, but you probably need to search online*/
+  flex-grow: 2;
   transition: all 0.4s;
  }
 
@@ -148,22 +147,10 @@ body {
 */
 #info-area {
   display: flex;
-  flex-grow: 1;
   flex-direction: column;
   overflow-x: hidden;
   font-family: 'Roboto', sans-serif;
-}
-#info-area p {
-  padding: 3px 4px 3px 8px;
-  text-decoration: none;
-  color: #818181;
-  display: block;
-}
-#info-area a {
-  color: white;
-  padding: 4px;
-  display: block;
-  text-align: center;
+  font-size: 4vw;
 }
 
 /* Toggle-container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
@@ -177,82 +164,33 @@ body {
   transition: all 0.4s;
 }
 
-#day1 {
-  display: flex;
-}
-
-/* Style the "Do" section */
-.do {
+.info-text-container {
   display: flex;
   flex-grow: 1;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  background-color: #133318;
-  border-color: #00ff99;
-  border-width: 3px;
-  border-style: solid;
-  padding: 4px 4px;
-}
-.do span {
-  font-size: 3.3vw;
-}
-@media screen and (min-width: 1000px) {
-  .do span {
-     font-size: 18px;
-  }
-}
-/* Style the "Don't" section */
-.dont {
-  display: flex;
-  flex-grow: 1;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  background-color: #801f1f;
-  border-color: #ff0000;
-  border-width: 3px;
-  border-style: solid;
-  padding: 4px 4px;
-}
-.dont span {
-  font-size: 3.3vw;
-}
-@media screen and (min-width: 1000px) {
-  .dont span {
-     font-size: 18px;
-  }
-}
-.parking-time {
-  display: flex;
   flex-basis: 100%;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin: 4px 4px;
-  padding: 2px 0px;
-  font-size: 3.3vw;
-  background-color: #111;
-}
-@media screen and (min-width: 1000px) {
-  .parking-time {
-     font-size: 18px;
-  }
-}
-.day2-3-time {
-  margin-left: 2px;
+  padding: 6px;
+  border-width: 3px;
+  border-style: solid;
 }
 
-/* For Beta only - emergency declarer */
-#emergency-declarer {
-  display: none;
-  width: 100%;
-  justify-content: center;
-  top: 300px;
-  position: fixed;
-  z-index: 5;
-  left: 0;
+/* Style the "Do" section */
+#do {
+  background-color: #133318;
+  border-color: #00ff99;
 }
-.emergency-btn {
-  margin: 5px;
+
+
+/* Style the "Don't" section */
+#dont {
+  background-color: #801f1f;
+  border-color: #ff0000;
+}
+
+
+#time {
+  background-color: #111;
+  border-color: #d9d9d9;
 }
