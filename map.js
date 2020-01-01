@@ -3,16 +3,12 @@
 //  - map Functions only
 //  - main() / code file
 //
-// Should try to pull out some repeated code as functions
-// - for example, would make fixing this like this easier:
-//   + when nothing is selected, then screen is rotated to portrait, map does expand like it should
 
 // Init Variables
 
-// Get HTML head element to use for loading css files
-
 var dayButtons = document.getElementsByClassName('day-selector');
 var mapTop;
+var mapBottom;
 
 // ############ //
 // ############ //
@@ -25,8 +21,11 @@ const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
+// This sleep function puts the day selector buttons at the top of the map, and
+// lets the info area draw, then snaps the bottom of the map container to it
 sleep(200).then(() => {
   mapTop = document.getElementById('geo-status-area').offsetHeight;
+  mapBottom = document.getElementById('info-area').offsetHeight;
   document.getElementById('day-selector-container').style.top = mapTop;
 });
 
@@ -64,7 +63,7 @@ function getStatus() {
   var time = date.getTime();
   var diff = time - startTimestamp;
   var hours = 1000 * 60 * 60;
-  var dh = diff / hours
+  var dh = diff / hours;
 
   var dayOut = 1;
   if (dh >= 11 && dh < 35) {
@@ -82,7 +81,9 @@ function getStatus() {
   // 2 for day 2
   // 3 for day 3
   // if it fails, return -1
-  return 2;
+
+  //return dayOut;
+  return dayOut;
 }
 
 function setStatus(day) {
@@ -397,6 +398,7 @@ darkModeSwitch.addEventListener('change', function() {
         map.setPaintProperty("route-data", "fill-color", getPaint(status));
         document.getElementById('day1-selector').click();
         document.getElementById('day1-selector').click();
+        setStatus(getStatus());
       }
     });
   }
