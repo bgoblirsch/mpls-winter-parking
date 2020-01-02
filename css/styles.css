@@ -153,6 +153,12 @@ body {
   font-size: 4vw;
 }
 
+@media screen and (min-width: 1000px) {
+  #info-area {
+     font-size: 20px;
+  }
+}
+
 /* Toggle-container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
 .toggle-container {
   display: none;
@@ -167,7 +173,6 @@ body {
 .info-text-container {
   display: flex;
   flex-grow: 1;
-  flex-basis: 100%;
   flex-direction: row;
   align-items: center;
   justify-content: center;
