@@ -2,13 +2,13 @@
 //  - UI Functions only
 //  - map Functions only
 //  - main() / code file
-//
 
 // Init Variables
-
 var dayButtons = document.getElementsByClassName('day-selector');
 var mapTop;
 var mapBottom;
+
+var db = firebase.firestore();
 
 // ############ //
 // ############ //
@@ -56,24 +56,6 @@ function deactivate() {
 }
 
 function getStatus() {
-  // Temporary getStatus logic until API is built
-  var emergStartUTC = new Date(Date.UTC('2019','11','14','3', '0', '0'));
-  var startTimestamp = emergStartUTC.getTime();
-  var date = new Date();
-  var time = date.getTime();
-  var diff = time - startTimestamp;
-  var hours = 1000 * 60 * 60;
-  var dh = diff / hours;
-
-  var dayOut = 1;
-  if (dh >= 11 && dh < 35) {
-      dayOut = 2;
-  } else if (dh >= 35 && dh < 47) {
-      dayOut = 3;
-  } else if (dh >= 47) {
-      dayOut = 0;
-  }
-
   // check if an emergency has been Declared
   // return:
   // 0 for no Emergency
@@ -82,8 +64,37 @@ function getStatus() {
   // 3 for day 3
   // if it fails, return -1
 
-  //return dayOut;
-  return dayOut;
+  // create date string in MM-DD-YYY format
+  var d = new Date();
+  let m = d.getMonth() + 1;
+  let date = m + '-' + d.getDate() + '-' + d.getFullYear();
+  let statusCode;
+
+  // try reading firestore db using date string
+  let docRef = db.collection("status").doc(date);
+  docRef.get().then(function(doc) {
+    if (doc.exists) {
+      console.log(doc.data().status);
+      if (doc.data().status == "There is currently no snow emergency.") {
+          //statusCode = 0;
+          setStatus(0);
+      } else {
+          setStatus(1);
+        //statusCode = 1;
+      }
+      return statusCode;
+    } else {
+      statusCode = -1;
+      console.log("Document does not exist");
+      return statusCode;
+    }
+  }).catch(function(error) {
+    statusCode = -1;
+    console.log("Error getting doc: ", error);
+    return statusCode;
+  });
+
+
 }
 
 function setStatus(day) {
@@ -303,25 +314,30 @@ map.on('load', function () {
   map.setPaintProperty("route-data", "fill-color", getPaint(statusString))
 
   // Set UI according to getStatus()
-  setStatus(status);
+  //setStatus(status);
 
   // Prompt user for geoloacation
   geolocate.trigger();
   sleep(3000).then(() => {
     var outlat = false;
-    if ((geolocate._lastKnownPosition.coords.latitude < 44.89015) || (geolocate._lastKnownPosition.coords.latitude > 45.05125)) {
-      outlat = true;
+    try {
+      if ((geolocate._lastKnownPosition.coords.latitude < 44.89015) || (geolocate._lastKnownPosition.coords.latitude > 45.05125)) {
+        outlat = true;
+      }
+      var outlon = false;
+      if ((geolocate._lastKnownPosition.coords.longitude < -93.32916) || (geolocate._lastKnownPosition.coords.longitude > -93.19386)) {
+        outlon = true;
+      }
+      if (outlat || outlon) {
+        map.fitBounds(city_boundary);
+      }
+      else {
+        geolocate.trackUserLocation = true;
+      }
+    } catch(error) {
+      console.warn("Failed to get user's location", error);
     }
-    var outlon = false;
-    if ((geolocate._lastKnownPosition.coords.longitude < -93.32916) || (geolocate._lastKnownPosition.coords.longitude > -93.19386)) {
-      outlon = true;
-    }
-    if (outlat || outlon) {
-      map.fitBounds(city_boundary);
-    }
-    else {
-      geolocate.trackUserLocation = true;
-    }
+
   });
 });
 
