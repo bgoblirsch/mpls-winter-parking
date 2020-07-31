@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "mpls-winter-parking",
+    "staging": "mpls-winter-parking"
+  }
+}
