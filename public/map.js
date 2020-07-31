@@ -82,16 +82,13 @@ function getStatus() {
           setStatus(1);
         //statusCode = 1;
       }
-      return statusCode;
     } else {
       statusCode = -1;
       console.log("Document does not exist");
-      return statusCode;
     }
   }).catch(function(error) {
     statusCode = -1;
     console.log("Error getting doc: ", error);
-    return statusCode;
   });
 
 
@@ -266,7 +263,8 @@ var geolocate = new mapboxgl.GeolocateControl({
   positionOptions: {
     enableHighAccuracy: true
   },
-  trackUserLocation: true
+  trackUserLocation: true,
+  showAccuracy: true
 });
 map.addControl(geolocate, 'bottom-right');
 

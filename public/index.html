@@ -1,0 +1,172 @@
+<html>
+<head>
+	<meta charset='utf-8' />
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151323589-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-151323589-1');
+	</script>
+
+	<title>Minneapolis Snow Emergency Parking Guide</title>
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.3.0/mapbox-gl.js'></script>
+	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.3.0/mapbox-gl.css' rel='stylesheet'/>
+	<link href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.1/mapbox-gl-geocoder.css' rel='stylesheet' type='text/css' />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="jquery-textfill-master/dist/jquery.textfill.min.js"></script>
+
+	<link href="css/styles.css" rel="stylesheet" type='text/css'>
+	<!-- Loading Animations -->
+	<link href="css/loading.css" rel="stylesheet" type='text/css'>
+  <!-- Sidenav Styling -->
+	<link href="css/sidenav.css" rel="stylesheet" type='text/css'>
+	<!-- Welcome Window Styling  -->
+	<link href="css/user-agreement.css" rel="stylesheet" type='text/css'>
+  <!-- Font Import -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap" rel="stylesheet">
+
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
+
+	<!-- Initialize Firebase -->
+	<script>
+		const firebaseConfig = {
+			apiKey: "AIzaSyBlGbkUa9N5hd9iqGPA0nrOvRW4h0O5uBc",
+			authDomain: "mpls-winter-parking.firebaseapp.com",
+			databaseURL: "https://mpls-winter-parking.firebaseio.com",
+			projectId: "mpls-winter-parking",
+			storageBucket: "mpls-winter-parking.appspot.com",
+			messagingSenderId: "1001002629605",
+			appId: "1:1001002629605:web:14c6b7f28ca972f5eb170c",
+			measurementId: "G-KVKJBBEW20"
+		};
+		firebase.initializeApp(firebaseConfig);
+	</script>
+</head>
+
+<body>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.1/mapbox-gl-geocoder.min.js'></script>
+<div id="grey-backdrop">
+	<div id="user-agreement">
+		<div id="agreement-wrapper">
+			<p class="agreement-text">By continuing, you acknowledge that this application can only assist you in parking during snow emergencies and that you are ultimately responsible for parking properly.</p>
+			<p class="agreement-text"><strong>Always observe and obey local signs.</strong></p>
+		</div>
+		<button id="accept-btn" label="I Acknowledge" onclick="closeAgreement()">I agree</button>
+	</div>
+</div>
+
+<!-- SIDENAV -->
+<div id="SideNav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+	<div id='darkmode-container'>
+		<span style='display:flex'>Dark Mode</span>
+		<label id='darkmode-switch' class="switch">
+			<input id='dark-mode' checked type="checkbox">
+			<span class="slider round"></span>
+		</label>
+	</div>
+  <a href="http://www.ci.minneapolis.mn.us/snow/snow_parking-info" target='blank'>Official Minneapolis Rules</a>
+	<a href="https://bgoblirsch.github.io" target='blank'>About</a>
+	<a href="https://forms.gle/V4PDV2NjP8LwEeU47" target='blank'>Feedback</a>
+	<iframe id="rules-video" src="https://www.youtube.com/embed/GeVPqEk2kf8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+	<!-- Twitter Feed (Coming Soon TM)
+	<div id="twitter-feed" style="display:none">
+		<a class="twitter-timeline" data-width="320" data-height="400" data-theme="light" href="https://twitter.com/MinneapolisSnow?ref_src=twsrc%5Etfw">Tweets by MinneapolisSnow</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+	</div>
+ -->
+
+</div>
+
+<!-- DAY SELECTORS -->
+<div id='day-selector-container'>
+	<button class='day-selector' id='day1-selector' value=1>
+		Day 1 Info
+	</button>
+	<button class='day-selector' id='day2-selector' value=2>
+		Day 2 Info
+	</button>
+	<button class='day-selector' id='day3-selector' value=3>
+		Day 3 Info
+	</button>
+</div>
+
+<!-- BODY -->
+<div class='wrapper'>
+	<div id='geo-status-area'>
+		<div id='geocoder'>
+			<div id='menu-btn-container' onclick="openNav()">
+				<div class='menu-btn'></div>
+				<div class='menu-btn'></div>
+				<div class='menu-btn'></div>
+			</div>
+		</div>
+		<div id='status-area'>
+			<!-- info button here saying, "A snow emergency will never be declared after X:00 PM"-->
+			<span id='status-title'>Snow Emergency Status: </span>
+			<span id='status-text'>Loading . . .</span><!-- hook into minneapolis snow emergency API/SMS system -->
+		</div>
+	</div>
+	<div id='map'>
+		<div id='loading-map' class="lds-ring"><div></div><div></div><div></div><div></div></div>
+	</div>
+	<div id='info-area'>
+		<!-- Day 1 Container -->
+		<div class='toggle-container' id='day1'>
+			<div class="info-text-container" id='do'>
+				<span>Park in any valid parking spot on<br>non-Snow Emergency Routes.</span>
+			</div>
+			<div class="info-text-container" id='dont'>
+				<span>Do NOT park on either side of a<br>Snow Emergency Route.</span>
+			</div>
+			<div class="info-text-container" id='time'>
+				<span>Day 1 Rules start at 9 PM and<br>end at 8 AM the next morning.</span>
+			</div>
+		</div>
+
+		<!-- Day 2 Container> -->
+		<div class='toggle-container' id='day2'>
+			<div class="info-text-container" id='do'>
+				<span>Park on either side of Snow Emergency Routes or<br>the ODD side of non-Snow Emergency Routes.</span>
+			</div>
+			<div class="info-text-container" id='dont'>
+				<span>Do NOT park on the EVEN side of<br>non-Snow Emergency Routes.</span>
+			</div>
+			<div class="info-text-container" id='time'>
+				<span>Rules are in effect from: <strong>8 AM - 8 PM</strong></span>
+			</div>
+		</div>
+
+		<!-- Day 3 Container -->
+		<div class='toggle-container' id='day3'>
+			<div class="info-text-container" id='do'>
+				<span>Park on either side of Snow Emergency Routes or <br> the EVEN side of non-Snow Emergency Routes</span>
+			</div>
+			<div class="info-text-container" id='dont'>
+				<span>Do NOT park on the ODD side of<br> non-Snow Emergency Routes.</span>
+			</div>
+			<div class="info-text-container" id='time'>
+				<span>Rules are in effect from: <strong>8 AM - 8 PM</strong></span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src='map.js'></script>
+
+<script>
+	$('do').textfill();
+	$('dont').textfill();
+</script>
+
+
+
+</body>
+</html>
