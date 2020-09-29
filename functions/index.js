@@ -49,8 +49,9 @@ exports.getStatus = functions.https.onRequest(async (req, res) => {
   let m = date.getMonth() + 1;
   let day = date.getDate();
   // account for UTC -> CST (CST is 6 hours behind UTC)
-  if (hours < 6):
+  if (hours < 6) {
     day -= 1;
+  }
   // MM-DD-YYYY format
   let dateText = m + '-' + date.getDate() + '-' + date.getFullYear();
   console.log({dateText});
