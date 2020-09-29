@@ -54,7 +54,6 @@ exports.getStatus = functions.https.onRequest(async (req, res) => {
   }
   // MM-DD-YYYY format
   let dateText = m + '-' + date.getDate() + '-' + date.getFullYear();
-  console.log({dateText});
 
   if (req.method === "OPTIONS") {
     // Send response to OPTIONS requests
