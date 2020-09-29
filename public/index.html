@@ -26,6 +26,8 @@
 	<link href="css/user-agreement.css" rel="stylesheet" type='text/css'>
   <!-- Font Import -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap" rel="stylesheet">
+	<!-- Loading Animation -->
+	<link href="css/loading.css" rel="stylesheet" type='text/css'>
 
 	<!-- The core Firebase JS SDK must be listed first -->
 	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
@@ -102,12 +104,14 @@
 			</div>
 		</div>
 		<div id='status-area'>
-			<!-- info button here saying, "A snow emergency will never be declared after X:00 PM"-->
+			<!-- info button here saying, "A snow emergency will never be declared after 6:00 PM"-->
 			<span id='status-title'>Snow Emergency Status: </span>
 			<span id='status-text'>Loading . . .</span>
+			<div id="info-icon" class="tooltip">&#x1F6C8;<span class="tooltiptext">A snow emergency will never be declared after 6 pm.</span></div>
 		</div>
 	</div>
 	<div id='map'>
+		<div id='loading-map' class="lds-ring"><div></div><div></div><div></div><div></div></div>
 	</div>
 	<div id='info-area'>
 		<!-- Day 1 Container -->

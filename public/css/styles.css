@@ -175,13 +175,43 @@ body {
   background-color: #133318;
 }
 
-
 /* Style the "Don't" section */
 #dont {
   background-color: #801f1f;
 }
 
-
 #time {
   background-color: #111;
+}
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  font-size: 2vw;
+  margin-left: 1vw;
+  top: -1vh
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: white;
+  color: black;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  width: 40vw;
+  top: 100%;
+  right: 105%;
+  margin-left: -20vw; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }

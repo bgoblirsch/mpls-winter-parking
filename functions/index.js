@@ -20,13 +20,6 @@ var result = "";
 var text = "";
 let status = "";
 
-let date = new Date();
-let hours = date.getHours();
-console.log({hours})
-let m = date.getMonth() + 1;
-// MM-DD-YYYY format
-let dateText = m + '-' + date.getDate() + '-' + date.getFullYear();
-
 const req0 = http.request(options, (res0) =>
   {
     res0.setEncoding("utf8");
@@ -49,6 +42,18 @@ req0.write("body");
 
 exports.getStatus = functions.https.onRequest(async (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
+
+  let date = new Date();
+  let hours = date.getHours();
+  // jan == 0
+  let m = date.getMonth() + 1;
+  let day = date.getDate();
+  // account for UTC -> CST (CST is 6 hours behind UTC)
+  if (hours < 6):
+    day -= 1;
+  // MM-DD-YYYY format
+  let dateText = m + '-' + date.getDate() + '-' + date.getFullYear();
+  console.log({dateText});
 
   if (req.method === "OPTIONS") {
     // Send response to OPTIONS requests

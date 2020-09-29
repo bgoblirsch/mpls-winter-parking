@@ -106,6 +106,9 @@ var routeData = {
 };
 
 map.on('load', function () {
+  // hide the loading Animation
+  document.getElementById('loading-map').style.display = 'none';
+
   // Find the index of the first symbol layer in the map style
   // Do this in order to display labels over the route data
   var layers = map.getStyle().layers;
