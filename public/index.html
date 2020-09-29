@@ -7,29 +7,29 @@
 	  window.dataLayer = window.dataLayer || [];
 	  function gtag(){dataLayer.push(arguments);}
 	  gtag('js', new Date());
-
 	  gtag('config', 'UA-151323589-1');
 	</script>
 
 	<title>Minneapolis Snow Emergency Parking Guide</title>
 	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.3.0/mapbox-gl.js'></script>
-	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.3.0/mapbox-gl.css' rel='stylesheet'/>
+	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
+	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet'/>
 	<link href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.1/mapbox-gl-geocoder.css' rel='stylesheet' type='text/css' />
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="jquery-textfill-master/dist/jquery.textfill.min.js"></script>
 
+	<!-- General css -->
 	<link href="css/styles.css" rel="stylesheet" type='text/css'>
-	<!-- Loading Animations -->
-	<link href="css/loading.css" rel="stylesheet" type='text/css'>
   <!-- Sidenav Styling -->
 	<link href="css/sidenav.css" rel="stylesheet" type='text/css'>
-	<!-- Welcome Window Styling  -->
+	<!-- Welcome/User Agreement Styling  -->
 	<link href="css/user-agreement.css" rel="stylesheet" type='text/css'>
   <!-- Font Import -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap" rel="stylesheet">
+	<!-- Loading Animation -->
+	<link href="css/loading.css" rel="stylesheet" type='text/css'>
 
-	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<!-- The core Firebase JS SDK must be listed first -->
 	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
@@ -73,16 +73,11 @@
 		</label>
 	</div>
   <a href="http://www.ci.minneapolis.mn.us/snow/snow_parking-info" target='blank'>Official Minneapolis Rules</a>
-	<a href="https://bgoblirsch.github.io" target='blank'>About</a>
 	<a href="https://forms.gle/V4PDV2NjP8LwEeU47" target='blank'>Feedback</a>
-	<iframe id="rules-video" src="https://www.youtube.com/embed/GeVPqEk2kf8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-	<!-- Twitter Feed (Coming Soon TM)
-	<div id="twitter-feed" style="display:none">
-		<a class="twitter-timeline" data-width="320" data-height="400" data-theme="light" href="https://twitter.com/MinneapolisSnow?ref_src=twsrc%5Etfw">Tweets by MinneapolisSnow</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-	</div>
- -->
-
+	<details>
+		<summary>About this app</summary>
+		<span>This web application was built as an alternative to the city's official snow emergency parking app. It uses the same dataset and is acquired from <a href="https://opendata.minneapolismn.gov/datasets/snow-emergency-routes" target="blank">the Minneapolis public data portal.</a> It also checks the snow emergency status every 5 minutes during snow emergency season.</span>
+		<span>Created by: <a href="https://bgoblirsch.github.io" target='blank'>Brandon Goblirsch</a></span>
 </div>
 
 <!-- DAY SELECTORS -->
@@ -109,9 +104,10 @@
 			</div>
 		</div>
 		<div id='status-area'>
-			<!-- info button here saying, "A snow emergency will never be declared after X:00 PM"-->
+			<!-- info button here saying, "A snow emergency will never be declared after 6:00 PM"-->
 			<span id='status-title'>Snow Emergency Status: </span>
-			<span id='status-text'>Loading . . .</span><!-- hook into minneapolis snow emergency API/SMS system -->
+			<span id='status-text'>Loading . . .</span>
+			<div id="info-icon" class="tooltip">&#x1F6C8;<span class="tooltiptext">A snow emergency will never be declared after 6 pm.</span></div>
 		</div>
 	</div>
 	<div id='map'>

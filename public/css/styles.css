@@ -33,10 +33,7 @@ body {
    padding-right: 1vh;
    background-color: #111;
    font-family: 'Montserrat', sans-serif;
-   border-bottom: solid 2px white;
    z-index: 10;
-   padding-left: 1vh;
-   padding-right: 1vh;
 }
 #geocoder {
   display: flex;
@@ -56,26 +53,25 @@ body {
   z-index: 10;
   padding: 10px;
 }
+
 .menu-btn {
   width: 30px;
-  height: 4px;
+  height: 3px;
   background-color: rgba(0, 0, 0, 0.75);
-  margin: 2px 0;
+  margin: 1.5px 0;
   border-radius: 20px;
 }
+
 .mapboxgl-ctrl-geocoder--icon-search {
   display: none;
 }
+
 .mapboxgl-ctrl-geocoder--input {
   padding-left: 60px;
+  height: 35px;
 }
+
 #status-area {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  background-color: #111;
   margin-bottom: 1vh;
   color: white;
 }
@@ -133,7 +129,7 @@ body {
   background: rgba(0, 0, 0, 0.6);
 }
 
-/* Add an active class to the active dropdown button */
+/* active class for the active day selector button */
 .active {
   background: rgba(247, 247, 247);
   color: black;
@@ -162,40 +158,60 @@ body {
 /* Toggle-container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
 .toggle-container {
   display: none;
-  flex-grow: 1;
   flex-wrap: wrap;
-  flex-direction: row;
   text-align: center;
   color: white;
   transition: all 0.4s;
 }
 
 .info-text-container {
-  display: flex;
   flex-grow: 1;
-  flex-direction: row;
-  align-items: center;
   justify-content: center;
-  padding: 6px;
-  border-width: 3px;
-  border-style: solid;
+  padding: 4px;
 }
 
 /* Style the "Do" section */
 #do {
   background-color: #133318;
-  border-color: #00ff99;
 }
-
 
 /* Style the "Don't" section */
 #dont {
   background-color: #801f1f;
-  border-color: #ff0000;
 }
-
 
 #time {
   background-color: #111;
-  border-color: #d9d9d9;
+}
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  font-size: 2vw;
+  margin-left: 1vw;
+  top: -1vh
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: white;
+  color: black;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  width: 40vw;
+  top: 100%;
+  right: 105%;
+  margin-left: -20vw; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }
