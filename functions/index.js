@@ -20,9 +20,12 @@ var result = "";
 var text = "";
 let status = "";
 
-let d = new Date();
-let m = d.getMonth() + 1;
-let date = m + '-' + d.getDate() + '-' + d.getFullYear();
+let date = new Date();
+let hours = date.getHours();
+console.log({hours})
+let m = date.getMonth() + 1;
+// MM-DD-YYYY format
+let dateText = m + '-' + date.getDate() + '-' + date.getFullYear();
 
 const req0 = http.request(options, (res0) =>
   {
@@ -44,13 +47,6 @@ const req0 = http.request(options, (res0) =>
 
 req0.write("body");
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
-
 exports.getStatus = functions.https.onRequest(async (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
 
@@ -62,7 +58,7 @@ exports.getStatus = functions.https.onRequest(async (req, res) => {
     res.status(204).send('');
   } else {
     // write to firebase realtime
-    const writeResult = await admin.firestore().collection("status").doc(date).set({ status: status });
+    const writeResult = await admin.firestore().collection("status").doc(dateText).set({ status: status });
     console.log("status: " + status);
     res.send(status);
   }

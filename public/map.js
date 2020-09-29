@@ -3,31 +3,165 @@
 //  - map Functions only
 //  - main() / code file
 
-// Init Variables
+// Init Gobal Variables
 var dayButtons = document.getElementsByClassName('day-selector');
 var mapTop;
 var mapBottom;
-
 var db = firebase.firestore();
 
-// ############ //
-// ############ //
-// UI Functions //
-// ############ //
-// ############ //
 
 // Sleep functionality
 const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
-// This sleep function puts the day selector buttons at the top of the map, and
+// This sleep function puts the day selector buttons at the top of the map,
 // lets the info area draw, then snaps the bottom of the map container to it
 sleep(200).then(() => {
   mapTop = document.getElementById('geo-status-area').offsetHeight;
   mapBottom = document.getElementById('info-area').offsetHeight;
   document.getElementById('day-selector-container').style.top = mapTop;
 });
+
+//////////////////
+//   Map Code   //
+//////////////////
+
+// Dev Token
+mapboxgl.accessToken = "pk.eyJ1IjoiYmdvYmxpcnNjaCIsImEiOiJjaXpuazEyZWowMzlkMzJvN3M3cThzN2ZkIn0.B0gMS_CvyKc_NHGmWejVqw";
+// Production Token:
+//mapboxgl.accessToken = 'pk.eyJ1IjoiYmdvYmxpcnNjaCIsImEiOiJjanpybWFsNWcxY3dnM21vNXZmN21lcXNrIn0.MwA-tEeJpUwITy7wkPwYJA';
+
+// Minneapolis City Boundary Extent
+var city_boundary = [
+  [-93.32916,45.05125],
+  [-93.19386,44.89015]
+];
+
+// initialize map
+var map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/dark-v10',
+  center: [-93.27, 44.98],
+  zoom: 11,
+});
+
+// geocoder object
+var geocoder = new MapboxGeocoder({
+  accessToken: mapboxgl.accessToken,
+  countries: "us",
+  mapboxgl: mapboxgl
+});
+// add geocoder object to document
+var geocoderHTML = document.getElementById('geocoder');
+geocoderHTML.appendChild(geocoder.onAdd(map));
+
+// var displayZoom determines whether or not to include zoom controls on map
+if (isPortrait()) {
+  var displayZoom = false;
+}
+else {
+  var displayZoom = true;
+};
+
+// Add compass control to map (& zoom if landscape)
+var nav = new mapboxgl.NavigationControl({showZoom: displayZoom});
+map.addControl(nav, 'bottom-right');
+
+// listen for window resize and update the map object accordingly
+window.onresize = function() {
+  sleep(300).then(() => {
+    map.resize();
+    mapTop = document.getElementById('geo-status-area').offsetHeight;
+    document.getElementById('day-selector-container').style.top = mapTop;
+  });
+}
+
+// Disable Map Rotation. Touch Rotation is still enabled, this is just to dissuade tilting.
+map.dragRotate.disable();
+
+// Create & add geolocate control button to the map.
+var geolocate = new mapboxgl.GeolocateControl({
+  positionOptions: {
+    enableHighAccuracy: true
+  },
+  trackUserLocation: true,
+  showAccuracy: true
+});
+map.addControl(geolocate, 'bottom-right');
+
+// zoom to extent of Minneapolis
+map.fitBounds(city_boundary);
+
+// Route Data from City of Minneapolis:
+// http://opendata.minneapolismn.gov/datasets/snow-emergency-routes
+var routeData = {
+  "id": "route-data",
+  "type": "fill",
+  "source": {
+    type: 'vector',
+    url: 'mapbox://bgoblirsch.3o2enpx8'
+  },
+  "source-layer": "Snow_Emergency_Routes-74gvfg",
+};
+
+map.on('load', function () {
+  // Find the index of the first symbol layer in the map style
+  // Do this in order to display labels over the route data
+  var layers = map.getStyle().layers;
+  var mapLabels;
+  for (var i = 0; i < layers.length; i++) {
+    if (layers[i].type === 'symbol') {
+      mapLabels = layers[i].id;
+      break;
+    }
+  }
+
+  // Add road data, then map labels above
+  map.addLayer(routeData, mapLabels);
+
+  // Get Snow Emergency Status
+  // statusString is stored as "DAY_" so that it can be used in the getPaint()
+  // and map.setPaintProperty function to style the map route layer accordingly
+  var status = getStatus();
+  if (status == 0) { // if no emergency, use day one as the active color style
+    var statusString = 'DAY1'
+  }
+  else {
+    statusString = 'DAY' + status
+  }
+  // Color Route Data According to Emergency Status
+  map.setPaintProperty("route-data", "fill-color", getPaint(statusString))
+
+  // Prompt user for geoloacation
+  geolocate.trigger();
+
+  // TODO: change this to await the geolocate
+  sleep(3000).then(() => {
+    var outlat = false;
+    try {
+      if ((geolocate._lastKnownPosition.coords.latitude < 44.89015) || (geolocate._lastKnownPosition.coords.latitude > 45.05125)) {
+        outlat = true;
+      }
+      var outlon = false;
+      if ((geolocate._lastKnownPosition.coords.longitude < -93.32916) || (geolocate._lastKnownPosition.coords.longitude > -93.19386)) {
+        outlon = true;
+      }
+      if (outlat || outlon) {
+        map.fitBounds(city_boundary);
+      }
+      else {
+        geolocate.trackUserLocation = true;
+      }
+    } catch(error) {
+      console.warn("Failed to get user's location", error);
+    }
+  });
+});
+
+//////////////////
+// UI Functions //
+//////////////////
 
 // Check if Dark Mode is enabled
 function checkDisplayMode() {
@@ -39,6 +173,7 @@ function checkDisplayMode() {
   }
 };
 
+// check if window is portrait; used for determing which map control buttons to display/enable
 function isPortrait() {
   if (window.screen.availHeight > window.screen.availWidth) {
     return true;
@@ -46,6 +181,8 @@ function isPortrait() {
   else { return false; }
 }
 
+// if a day selector button is deactivated, loop through the buttons and deactivate
+// each, and hide the info area and route map layer
 function deactivate() {
   var infoArea = document.getElementById('info-area');
   hideMapLayer();
@@ -66,21 +203,21 @@ function getStatus() {
 
   // create date string in MM-DD-YYY format
   var d = new Date();
-  let m = d.getMonth() + 1;
+  let m = d.getMonth() + 1; // add one to month because jan == 0
   let date = m + '-' + d.getDate() + '-' + d.getFullYear();
   let statusCode;
 
-  // try reading firestore db using date string
+  // try looking up the date string in the firestore db;
   let docRef = db.collection("status").doc(date);
   docRef.get().then(function(doc) {
     if (doc.exists) {
       console.log(doc.data().status);
       if (doc.data().status == "There is currently no snow emergency.") {
-          //statusCode = 0;
-          setStatus(0);
+        // call setStatus() with 0 if db says no emergency
+        setStatus(0);
       } else {
-          setStatus(1);
-        //statusCode = 1;
+        // call setStatus() with 1 if db says anything other than no emergency
+        setStatus(1);
       }
     } else {
       statusCode = -1;
@@ -90,17 +227,21 @@ function getStatus() {
     statusCode = -1;
     console.log("Error getting doc: ", error);
   });
-
-
 }
 
+// set the status of the app: style map layer, display the right day, and set
+// the active day selector button to the day that is passed to this function
+// day is an int, and the encoding is described above in the getStatus() function
 function setStatus(day) {
+  // statusText starts as "Loading . . ."
   var statusText = document.getElementById('status-text');
+  // used to select the correct html day selector object
   var dayText = 'day' + day + '-selector';
   if (day == 0) {
     // set status to 'No Emergency Declared'
     statusText.innerHTML = 'No Emergency Declared';
     statusText.className = 'no-emergency';
+    // if day 1 button is not active, click it to make it active
     var dayButton = document.getElementById('day1-selector');
     if (!dayButton.classList.value.includes('active')) {
       dayButton.click();
@@ -146,204 +287,18 @@ function openNav() {
 
 // Close SideNav
 // Set the width of the side navigation to 0
-// Also stop the video if it's playing
 function closeNav() {
-  stopVideos();
   document.getElementById("SideNav").style.width = "0";
 }
-
-// Code to stop youtube video on nav close
-// Later change so that it only pauses the video
-var stopVideos = function () {
-	var videos = document.querySelectorAll('iframe, video');
-	Array.prototype.forEach.call(videos, function (video) {
-		if (video.tagName.toLowerCase() === 'video') {
-			video.pause();
-		} else {
-			var src = video.src;
-			video.src = src;
-		}
-	});
-};
 
 function closeAgreement() {
   var agreement = document.getElementById("grey-backdrop");
   agreement.style.display = "none";
 }
 
-// ############# //
-// ############# //
-// Map Functions //
-// ############# //
-// ############# //
-
-function hideMapLayer() {
-  map.setLayoutProperty("route-data", "visibility", "none");
-}
-
-function getPaint(day) {
-  var result = [
-    "match",
-    ["get", day],
-    0, '#801f1f',
-    1, '#278235',
-    "#ccc",
-  ]
-  return result;
-
-}
-
-// set map layer style
-function setMapLayer(day, mode) {
-  fillColor = getPaint(day);
-  map.setPaintProperty('route-data', 'fill-color', fillColor);
-  if (map.getLayoutProperty('route-data', 'visibility') == 'none') {
-    map.setLayoutProperty('route-data', 'visibility', 'visible');
-  }
-}
-
-// ############# //
-// ############# //
-//   Map Code    //
-// ############# //
-// ############# //
-
-// Mapbox Token:
-mapboxgl.accessToken = 'pk.eyJ1IjoiYmdvYmxpcnNjaCIsImEiOiJjanpybWFsNWcxY3dnM21vNXZmN21lcXNrIn0.MwA-tEeJpUwITy7wkPwYJA';
-// Minneapolis City Boundary Extent
-var city_boundary = [
-  [-93.32916,45.05125],
-  [-93.19386,44.89015]
-];
-
-// initialize map
-var map = new mapboxgl.Map({
-  container: 'map', // container id
-  style: 'mapbox://styles/mapbox/dark-v10', // stylesheet location
-  center: [-93.27, 44.98], // starting position [lng, lat]
-  zoom: 11, // starting zoom
-  //minZoom: 11,
-});
-
-// geocoder object
-var geocoder = new MapboxGeocoder({
-  accessToken: mapboxgl.accessToken,
-  countries: "us",
-  mapboxgl: mapboxgl
-});
-var geocoderHTML = document.getElementById('geocoder');
-geocoderHTML.appendChild(geocoder.onAdd(map));
-
-// var displayZoom determines whether or not to include zoom controls on map
-if (isPortrait()) {
-  var displayZoom = false;
-}
-else {
-  var displayZoom = true;
-};
-
-// Add compass to map (& zoom if landscape)
-var nav = new mapboxgl.NavigationControl({showZoom: displayZoom});
-map.addControl(nav, 'bottom-right');
-
-window.onresize = function() {
-  sleep(300).then(() => {
-    map.resize();
-    mapTop = document.getElementById('geo-status-area').offsetHeight;
-    document.getElementById('day-selector-container').style.top = mapTop;
-  });
-}
-
-
-// Disable Map Rotation. Touch Rotation is still enabled, this is just to dissuade tilting.
-map.dragRotate.disable();
-
-// Add geolocate control to the map.
-var geolocate = new mapboxgl.GeolocateControl({
-  positionOptions: {
-    enableHighAccuracy: true
-  },
-  trackUserLocation: true,
-  showAccuracy: true
-});
-map.addControl(geolocate, 'bottom-right');
-
-map.fitBounds(city_boundary);
-
-// Route Data from City of Minneapolis:
-// http://opendata.minneapolismn.gov/datasets/snow-emergency-routes
-var routeData = {
-  "id": "route-data",
-  "type": "fill",
-  "source": {
-    type: 'vector',
-    url: 'mapbox://bgoblirsch.3o2enpx8'
-  },
-  "source-layer": "Snow_Emergency_Routes-74gvfg",
-};
-
-map.on('load', function () {
-  // Unshow the "Loading..." text
-  document.getElementById('loading-map').style.display = 'none';
-
-  // Find the index of the first symbol layer in the map style
-  // Do this in order to display labels over the route data
-  var layers = map.getStyle().layers;
-  var mapLabels;
-  for (var i = 0; i < layers.length; i++) {
-    if (layers[i].type === 'symbol') {
-      mapLabels = layers[i].id;
-      break;
-    }
-  }
-
-  // Add road data
-  map.addLayer(routeData, mapLabels);
-
-  // Get Snow Emergency Status
-  var status = getStatus();
-  if (status == 0) {
-    var statusString = 'DAY1'
-  }
-  else {
-    statusString = 'DAY' + status
-  }
-  // Color Route Data According to Emergency Status
-  map.setPaintProperty("route-data", "fill-color", getPaint(statusString))
-
-  // Set UI according to getStatus()
-  //setStatus(status);
-
-  // Prompt user for geoloacation
-  geolocate.trigger();
-  sleep(3000).then(() => {
-    var outlat = false;
-    try {
-      if ((geolocate._lastKnownPosition.coords.latitude < 44.89015) || (geolocate._lastKnownPosition.coords.latitude > 45.05125)) {
-        outlat = true;
-      }
-      var outlon = false;
-      if ((geolocate._lastKnownPosition.coords.longitude < -93.32916) || (geolocate._lastKnownPosition.coords.longitude > -93.19386)) {
-        outlon = true;
-      }
-      if (outlat || outlon) {
-        map.fitBounds(city_boundary);
-      }
-      else {
-        geolocate.trackUserLocation = true;
-      }
-    } catch(error) {
-      console.warn("Failed to get user's location", error);
-    }
-
-  });
-});
-
-// ############ //
-// ############ //
+//////////////////
 //   UI Code    //
-// ############ //
-// ############ /
+//////////////////
 
 // Add click event listener on the three Day Selection buttons
 for (var i = 0; i < dayButtons.length; i++) {
@@ -444,3 +399,36 @@ darkModeSwitch.addEventListener('change', function() {
     });
   }
 });
+
+
+// ############# //
+// ############# //
+// Map Functions //
+// ############# //
+// ############# //
+
+function hideMapLayer() {
+  map.setLayoutProperty("route-data", "visibility", "none");
+}
+
+
+function getPaint(day) {
+  var result = [
+    "match",
+    ["get", day],
+    0, '#801f1f',
+    1, '#278235',
+    "#ccc",
+  ]
+  return result;
+
+}
+
+// set map layer style
+function setMapLayer(day, mode) {
+  fillColor = getPaint(day);
+  map.setPaintProperty('route-data', 'fill-color', fillColor);
+  if (map.getLayoutProperty('route-data', 'visibility') == 'none') {
+    map.setLayoutProperty('route-data', 'visibility', 'visible');
+  }
+}

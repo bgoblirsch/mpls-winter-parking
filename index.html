@@ -7,7 +7,6 @@
 	  window.dataLayer = window.dataLayer || [];
 	  function gtag(){dataLayer.push(arguments);}
 	  gtag('js', new Date());
-
 	  gtag('config', 'UA-151323589-1');
 	</script>
 
@@ -29,7 +28,7 @@
   <!-- Font Import -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap" rel="stylesheet">
 
-	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<!-- The core Firebase JS SDK must be listed first -->
 	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
@@ -75,17 +74,9 @@
   <a href="http://www.ci.minneapolis.mn.us/snow/snow_parking-info" target='blank'>Official Minneapolis Rules</a>
 	<a href="https://bgoblirsch.github.io" target='blank'>About</a>
 	<a href="https://forms.gle/V4PDV2NjP8LwEeU47" target='blank'>Feedback</a>
-	<iframe id="rules-video" src="https://www.youtube.com/embed/GeVPqEk2kf8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-	<!-- Twitter Feed (Coming Soon TM)
-	<div id="twitter-feed" style="display:none">
-		<a class="twitter-timeline" data-width="320" data-height="400" data-theme="light" href="https://twitter.com/MinneapolisSnow?ref_src=twsrc%5Etfw">Tweets by MinneapolisSnow</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-	</div>
- -->
-
 </div>
 
-<!-- DAY SELECTORS -->
+<!-- DAY SELECTOR BUTTONS -->
 <div id='day-selector-container'>
 	<button class='day-selector' id='day1-selector' value=1>
 		Day 1 Info
@@ -131,7 +122,7 @@
 			</div>
 		</div>
 
-		<!-- Day 2 Container> -->
+		<!-- Day 2 Container -->
 		<div class='toggle-container' id='day2'>
 			<div class="info-text-container" id='do'>
 				<span>Park on either side of Snow Emergency Routes or<br>the ODD side of non-Snow Emergency Routes.</span>
@@ -159,14 +150,13 @@
 	</div>
 </div>
 
+<!-- Load map, and custom mapbox gl js -->
 <script src='map.js'></script>
 
+<!-- This jquery library changes the parking rules text sizes so that they fill their parent container -->
 <script>
 	$('do').textfill();
 	$('dont').textfill();
 </script>
-
-
-
 </body>
 </html>
