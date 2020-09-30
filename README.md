@@ -1,4 +1,4 @@
-# [mplswinterparking.com](mplswinterparking.com)
+# [mplswinterparking.com](https://mplswinterparking.com)
 
 Welcome to the mpls winter parking web app, an alternative to the official Minneapolis Snow Emergency App. This project is lightweight, using only flexbox for the UI layout and mapbox for the map component. 
 
