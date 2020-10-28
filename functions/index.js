@@ -35,7 +35,7 @@ const req0 = http.request(options, (res0) =>
     })
   }).on("error", (e) => {
     const err = "Got error:"+e.message;
-    res0.send(err);
+    console.error(err);
 });
 
 req0.write("body");
@@ -63,7 +63,7 @@ exports.getStatus = functions.https.onRequest(async (req, res) => {
     res.status(204).send('');
   } else {
     // write to firebase realtime
-    const writeResult = await admin.firestore().collection("status").doc(dateText).set({ status: status });
+    const writeResult = await admin.firestore().collection("status").doc("status").set({ status: req0 });
     console.log("status: " + status);
     res.send(status);
   }
