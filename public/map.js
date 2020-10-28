@@ -100,9 +100,9 @@ var routeData = {
   "type": "fill",
   "source": {
     type: 'vector',
-    url: 'mapbox://bgoblirsch.3o2enpx8'
+    url: 'mapbox://bgoblirsch.routes2020'
   },
-  "source-layer": "Snow_Emergency_Routes-74gvfg",
+  "source-layer": "routes2020",
 };
 
 map.on('load', function () {
@@ -211,16 +211,19 @@ function getStatus() {
   let statusCode;
 
   // try looking up the date string in the firestore db;
-  let docRef = db.collection("status").doc(date);
+  let docRef = db.collection("status").doc("status");
   docRef.get().then(function(doc) {
     if (doc.exists) {
       console.log(doc.data().status);
-      if (doc.data().status == "There is currently no snow emergency.") {
+      if (doc.data().status == "0") {
         // call setStatus() with 0 if db says no emergency
         setStatus(0);
-      } else {
-        // call setStatus() with 1 if db says anything other than no emergency
+      } else if (doc.data().status == "1") {
         setStatus(1);
+      } else if (doc.data().status == "2") {
+        setStatus(2);
+      } else if (doc.data().status == "3") {
+        setStatus(3);
       }
     } else {
       statusCode = -1;

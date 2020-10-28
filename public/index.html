@@ -35,7 +35,19 @@
 	<script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-analytics.js"></script>
 
 	<!-- Initialize Firebase -->
-	<!-- Firebase config and API key omitted -->
+	<script>
+		const firebaseConfig = {
+			apiKey: "AIzaSyBlGbkUa9N5hd9iqGPA0nrOvRW4h0O5uBc",
+			authDomain: "mpls-winter-parking.firebaseapp.com",
+			databaseURL: "https://mpls-winter-parking.firebaseio.com",
+			projectId: "mpls-winter-parking",
+			storageBucket: "mpls-winter-parking.appspot.com",
+			messagingSenderId: "1001002629605",
+			appId: "1:1001002629605:web:14c6b7f28ca972f5eb170c",
+			measurementId: "G-KVKJBBEW20"
+		};
+		firebase.initializeApp(firebaseConfig);
+	</script>
 </head>
 
 <body>
@@ -62,10 +74,7 @@
 	</div>
   <a href="http://www.ci.minneapolis.mn.us/snow/snow_parking-info" target='blank'>Official Minneapolis Rules</a>
 	<a href="https://forms.gle/V4PDV2NjP8LwEeU47" target='blank'>Feedback</a>
-	<details>
-		<summary>About this app</summary>
-		<span>This web application was built as an alternative to the city's official snow emergency parking app. It uses the same dataset and is acquired from <a href="https://opendata.minneapolismn.gov/datasets/snow-emergency-routes" target="blank">the Minneapolis public data portal.</a> It also checks the snow emergency status every 5 minutes during snow emergency season.</span>
-		<span>Created by: <a href="https://bgoblirsch.github.io" target='blank'>Brandon Goblirsch</a></span>
+	<a href="https://github.com/bgoblirsch/mpls-winter-parking" target="blank">About</a>
 </div>
 
 <!-- DAY SELECTORS -->

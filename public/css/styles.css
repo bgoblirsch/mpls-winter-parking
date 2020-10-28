@@ -77,13 +77,13 @@ body {
 }
 #status-title {
   flex-wrap: nowrap;
-  font-size: 3.5vw;
+  font-size: 3.2vw;
   display: inline;
   margin-right: 0.5vw;
 }
 #status-text {
   flex-wrap: nowrap;
-  font-size: 3.5vw;
+  font-size: 3.2vw;
   display: inline;
   white-space: nowrap;
   margin-left: 0.5vw;

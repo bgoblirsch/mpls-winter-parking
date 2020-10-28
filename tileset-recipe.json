@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "layers": {
+    "routes2020": {
+      "source": "mapbox://tileset-source/bgoblirsch/routes2020",
+      "minzoom": 10,
+      "maxzoom": 16
+    }
+  }
+}
