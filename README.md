@@ -1,8 +1,12 @@
 # [mplswinterparking.com](https://mplswinterparking.com)
 
-Welcome to the mpls winter parking web app, an alternative to the official Minneapolis Snow Emergency App. This web app is designed for mobile but funtional in desktop environments. It is lightweight, using only flexbox for the UI layout and mapbox for the map component.
+## 2021 update
 
-In the winter of 2020-2021, Minneapolis updated their snow emergency app and it is much more functional now. Therefore, I don't have much reason to keep maintaining full funtionality of this website. I will keep the domain up but will no longer update the data every year at the start of snow season and the live snow emergency status has been has just be changed to a link to Minneapolis's snow emergency page.
+In the winter of 2020-2021, Minneapolis updated their snow emergency app and it is much more functional now. Therefore, there is not much reason to maintain this web app. I will keep the domain up until the end of the season in 2022.
+
+---
+
+Welcome to the Minneapolis Winter Parking web app, an alternative to the official Minneapolis Snow Emergency App. This web app is designed for mobile but funtional in desktop environments. It is lightweight, using only flexbox for the UI layout and mapbox for the map component.
 
 The snow emergency route data was acquired from the [Minneapolis Open Data Portal](https://opendata.minneapolismn.gov/datasets/snow-emergency-routes) and was updated at the start of every snow emergency season.
 
