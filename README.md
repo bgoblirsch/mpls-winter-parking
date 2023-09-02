@@ -8,6 +8,6 @@ In the winter of 2020-2021, Minneapolis updated their snow emergency app and it 
 
 Welcome to the Minneapolis Winter Parking web app, an alternative to the official Minneapolis Snow Emergency App. This web app is designed for mobile but funtional in desktop environments. It is lightweight, using only flexbox for the UI layout and mapbox for the map component.
 
-The snow emergency route data was acquired from the [Minneapolis Open Data Portal](https://opendata.minneapolismn.gov/datasets/snow-emergency-routes) and was updated at the start of every snow emergency season.
+The snow emergency route data was acquired from the [Minneapolis Open Data Portal](https://opendata.minneapolismn.gov/datasets/snow-emergency-routes).
 
 At the launch of the project, the City of Minneapolis did not have a public API for acquiring snow emergency status. The project used Google Firebase and a scheduled cloud function that scraped [http://www2.minneapolismn.gov/snow/index.htm](http://www2.minneapolismn.gov/snow/index.htm) every five minutes. It then wrote the extracted status to a Cloud Firestore db. On a user's page load, the database was read to determine the current snow emergency status and style the app accordingly. The logic for the scheduled cloud function is located in the functions/index.js file.
